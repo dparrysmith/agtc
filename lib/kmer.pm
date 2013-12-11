@@ -60,12 +60,18 @@ sub kmer {
     return \@frequent_strs;
 }
 
-=head2
+=head2 search_seq_mismatch
 Implements: search_seq_mismatch
 Requires:
     self
     probe sequence (string)
     mismatch_tolerance (integer)
+
+Algorithm:
+generate all the subsequences of the length of the probe sequence
+generate a list sorted by hamming distance
+
+This will calculate every mismatch using the perl sort algorithm
 
 =cut
 
