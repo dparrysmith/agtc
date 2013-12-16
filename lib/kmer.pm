@@ -26,6 +26,11 @@ has mismatch_limit => (
     is => 'rw',
 );
 
+has title => (
+    isa => 'Str',
+    is => 'rw',
+);
+
 our @probe_array = ();
 
 =head kmer
@@ -194,6 +199,7 @@ $DB::single=1;
     my $title = <$seq_fh> ; 
     chomp $title;
     chop($title) if ($title =~ m/\r$/);
+    $self->title( $title );
 
     $self->probe_seq( $probe );
     $self->array_probe_seq(); # sets len_probe_seq
@@ -205,7 +211,14 @@ $DB::single=1;
     #generate all the subsequences the same length as the probe
     my %candidates;
     my $residual = '';
+    my $feedback = 0;
+    my $line_number = 0;
     while (defined( my $line = <$seq_fh>) ) { # some loop to go through the file for portions of the sequence to send in to kmer_mismatch
+        ++$line_number;
+        if ( ++$feedback > 100000 ) {
+            print $line_number . "\n";
+            $feedback = 1;
+        }
         chomp $line;
         chop($line) if ($line =~ m/\r$/);
         my $sequence = $residual . $line;
